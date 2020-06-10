@@ -1,0 +1,9 @@
+tdt-nav-bar
+.container
+  .row
+    if tasks
+      for list in lists
+        tdt-list.column(
+          data-list= listName
+        )
+tdt-tools

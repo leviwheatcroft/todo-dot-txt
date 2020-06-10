@@ -1,0 +1,53 @@
+.closedBar(
+  class= classnames({ complete: task.complete })
+)
+  span.flexGroup
+    span.completeCheckbox
+      if task.complete
+        != icons('check-square')
+      else
+        != icons('square')
+    span.description
+      = task.parsed
+  span.flexGroup
+    if task.priority
+      span.priority
+        .tag.tag-priority(
+          data-priority = task.priority
+        )
+
+          span.tag-icon
+            != icons('star')
+          span.tag-text
+            = task.priority
+    if task.projects.length
+      span.projects
+        for project in task.projects
+          .tag.tag-project(
+            data-project= project
+          )
+            span.tag-icon
+              != icons('plus')
+            span.tag-text
+              = project
+    if task.contexts.length
+      span.contexts
+        for context in task.contexts
+          .tag.tag-context(
+            data-context= context
+          )
+            span.tag-icon
+              != icons('at-sign')
+            span.tag-text
+              = context
+    if Object.keys(task.values).length
+      span.values
+        for value, key in task.values
+          .tag.tag-value(
+            data-key= key
+            data-value= value
+          )
+            span.tag-icon
+              != icons('tag')
+            span.tag-text
+              = `${key}: ${value}`

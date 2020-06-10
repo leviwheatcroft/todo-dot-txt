@@ -1,0 +1,34 @@
+
+.closedBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .flexGroup {
+    display: flex;
+    align-items: center;
+  }
+  &.complete {
+    span.description {
+      text-decoration: line-through;
+    }
+  }
+  .description {
+    width: 100%;
+  }
+  .completeCheckbox {
+    width: 4rem;
+    // https://stackoverflow.com/a/35962743/441930
+    position: relative;
+    > svg {
+      position: absolute;
+      top: 50%;
+      -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+      left: 0;
+      right: 0;
+      margin: auto;
+      text-align: center;
+    }
+  }
+}

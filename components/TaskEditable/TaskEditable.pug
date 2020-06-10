@@ -1,0 +1,9 @@
+.task-editable
+  .inputBar
+    input(
+      value= task ? task.raw : ''
+      placeholder= randomPlaceholder()
+    )
+    tdt-button-save
+  .buttonBar
+    tdt-button-due
