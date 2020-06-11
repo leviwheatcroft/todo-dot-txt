@@ -3,11 +3,6 @@ const {
   isArray
 } = require('../lib/typeGuards')
 const {
-  domLoaded,
-  stateUpdated,
-  storageLoaded
-} = require('../lib/events')
-const {
   isTaskData
 } = require('../lib/typeGuards')
 const {
@@ -21,8 +16,8 @@ module.exports = class Storage extends StateObserver {
     const registry = localStorage.getItem('tdt-registry')
     if (registry)
       this.registry = JSON.parse(registry)
-    this.addEventListener(domLoaded, this.domLoaded.bind(this))
-    this.addEventListener(stateUpdated, this.stateUpdated.bind(this))
+    this.on('domLoaded', this.domLoaded.bind(this))
+    this.on('stateUpdated', this.stateUpdated.bind(this))
   }
 
   stateUpdated (event) {
@@ -56,7 +51,7 @@ module.exports = class Storage extends StateObserver {
       state[key] = array.filter((i, idx) => array.indexOf(i) === idx)
     })
     this.stateUpdate(state)
-    this.instancesDispatchEvent(storageLoaded)
+    this.instancesTrigger({ type: 'storageLoaded' })
   }
 
   setTask (taskData) {

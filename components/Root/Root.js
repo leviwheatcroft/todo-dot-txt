@@ -3,9 +3,6 @@ const template = require('./Root.pug')
 const {
   StateObserverComponent
 } = require('../../lib/StateObserver')
-const {
-  storageLoaded
-} = require('../../lib/events')
 
 class Root extends StateObserverComponent {
   constructor () {
@@ -14,7 +11,8 @@ class Root extends StateObserverComponent {
       stateTasks: 'tasks',
       stateLists: 'lists'
     })
-    this.addEventListener(storageLoaded, this.storageLoaded.bind(this))
+    this.on('storageLoaded', this.storageLoaded.bind(this))
+    console.log(this.handlers)
   }
 
   storageLoaded () {

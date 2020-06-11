@@ -1,20 +1,15 @@
 require('./Task.less')
 const template = require('./Task.pug')
 const {
-  dataUpdated,
-  newTask,
-  filter
-} = require('../../lib/events')
-const {
   StateObserverComponent
 } = require('../../lib/StateObserver')
 
 class Task extends StateObserverComponent {
   constructor () {
     super()
-    this.addEventListener(dataUpdated, this.render.bind(this))
-    this.addEventListener(newTask, this.newTask.bind(this))
-    this.addEventListener(filter, this.filter.bind(this))
+    this.on('dataUpdated', this.render.bind(this))
+    this.on('newTask', this.newTask.bind(this))
+    this.on('filter', this.filter.bind(this))
     this.render()
   }
 
@@ -30,10 +25,7 @@ class Task extends StateObserverComponent {
     if (!this.data.task)
       return
 
-    const [re] = event.data
-    console.log('filter', this)
-    console.log('re', re)
-    console.log('test', re.test(this.data.task.raw))
+    const { data: { re } } = event
     if (re.test(this.data.task.raw))
       this.unhide()
     else

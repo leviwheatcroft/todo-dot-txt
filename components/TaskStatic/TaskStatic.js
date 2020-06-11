@@ -7,7 +7,6 @@ const {
 class TaskStatic extends StateObserverComponent {
   constructor () {
     super()
-    // this.addEventListener('dataUpdated', this.render.bind(this))
     this.addEventListener('click', this._editable.bind(this))
     this.render()
   }
@@ -37,8 +36,11 @@ class TaskStatic extends StateObserverComponent {
     const update = { filter }
     this.stateUpdate(update)
     const reOperators = /[|\\{}()[\]^$+*?.]/g
-    const re = new RegExp(filter.replace(reOperators, '\\$&'))
-    this.instancesDispatchEvent(filter, re)
+    const re = new RegExp(filter.replace(reOperators, '\\$&'), 'i')
+    this.instancesTrigger({
+      type: 'filter',
+      data: { re }
+    })
   }
 
   _editable (event) {

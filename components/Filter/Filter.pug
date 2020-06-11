@@ -1,5 +1,12 @@
 .filterContainer
-  input.filter
-  button.btn.btn-apply
-    span.btn-icon
-      != icons('search')
+  input.filter(
+    value= filter
+  )
+  if filter
+    button.btn.btn-clear
+      span.btn-icon
+        != icons('x')
+  else
+    button.btn.btn-apply
+      span.btn-icon
+        != icons('search')

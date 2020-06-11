@@ -7,17 +7,14 @@ const {
   StateObserverComponent
 } = require('../../lib/StateObserver')
 const parseTask = require('../../lib/parseTask')
-const {
-  taskOpened
-} = require('../../lib/events')
 
 let firstPlaceholder = true
 
 class TaskEditable extends StateObserverComponent {
   constructor () {
     super()
-    this.instancesDispatchEvent(taskOpened)
-    this.addEventListener(taskOpened, this.taskOpened.bind(this))
+    this.instancesTrigger({ type: 'taskOpened' })
+    this.on('taskOpened', this.taskOpened.bind(this))
     this.render()
   }
 
