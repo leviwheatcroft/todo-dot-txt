@@ -30,6 +30,10 @@ module.exports = class Storage extends StateObserver {
         return
       this.setTask(task)
     })
+    Object.keys(this.states[1].tasks).forEach((id) => {
+      if (!this.states[0].tasks[id])
+        this.removeTask(id)
+    })
   }
 
   domLoaded () {
@@ -75,7 +79,8 @@ module.exports = class Storage extends StateObserver {
   }
 
   removeTask (id) {
-    localStorage.remove(id)
+    localStorage.removeItem(id)
     this.registry = this.registry.filter((val) => val !== id)
+    localStorage.setItem('tdt-registry', JSON.stringify(this.registry))
   }
 }

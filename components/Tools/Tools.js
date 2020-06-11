@@ -7,16 +7,25 @@ class Tools extends LightBox {
   //   super()
   // }
 
-  // render () {
-  //   const locals = {
-  //     lightboxTitle: this.lightboxTitle
-  //   }
-  //   super.render(locals)
-  //   const $mask = this.querySelector('.lightbox-mask')
-  //   $mask.addEventListener('click', this.close.bind(this))
-  //   const $closeButton = this.querySelector('button.closeButton')
-  //   $closeButton.addEventListener('click', this.close.bind(this))
-  // }
+  render () {
+    super.render()
+    const $btnPurge = this.querySelector('.btn-purge')
+    $btnPurge.addEventListener('click', this.purge.bind(this))
+  }
+
+  purge () {
+    const allTasks = Object.values(this.states[0].tasks)
+    const completeTasks = allTasks.filter((t) => t.complete)
+    const incompleteTasks = allTasks.filter((t) => !t.complete)
+    const tasks = Object.fromEntries(incompleteTasks.map((t) => [t.id, t]))
+    const update = { tasks }
+    this.stateUpdate(update)
+    this.instancesTrigger({
+      type: 'purge',
+      data: { completeTasks }
+    })
+    this.hide()
+  }
 }
 
 Tools.prototype.lightboxTitle = 'Tools'

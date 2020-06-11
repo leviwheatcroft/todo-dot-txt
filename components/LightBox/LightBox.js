@@ -1,8 +1,10 @@
 require('./LightBox.less')
 const template = require('./LightBox.pug')
-const Component = require('../../lib/Component')
+const {
+  StateObserverComponent
+} = require('../../lib/StateObserver')
 
-class LightBox extends Component {
+class LightBox extends StateObserverComponent {
   constructor () {
     super()
     this.classList.add('hide')

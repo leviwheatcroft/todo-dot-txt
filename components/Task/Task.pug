@@ -1,11 +1,12 @@
 .taskContainer
   if newTask !== undefined
     tdt-task-new
-  else if task.open
-    tdt-task-editable(
-      data-state-task= `tasks.${task.id}`
-    )
-  else
-    tdt-task-static(
-      data-state-task= `tasks.${task.id}`
-    )
+  else if task
+    if task.open
+      tdt-task-editable(
+        data-state-task= `tasks.${task.id}`
+      )
+    else
+      tdt-task-static(
+        data-state-task= `tasks.${task.id}`
+      )
