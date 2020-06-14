@@ -16,6 +16,7 @@ class Storage extends StateObserver {
     this.subscribe('saveNewTask', this.setTask.bind(this))
     this.subscribe('importTasks', this.importTasks.bind(this))
     this.subscribe('purgeCompleted', this.purgeCompleted.bind(this))
+    this.subscribe('taskToggleComplete', this.setTask.bind(this))
   }
 
   domLoaded () {

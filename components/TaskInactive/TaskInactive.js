@@ -61,10 +61,7 @@ class TaskInactive extends Component {
 
   _toggleComplete (event) {
     event.stopPropagation()
-    const update = {
-      [`${this.dataPaths.task}.complete`]: !this.data.task.complete
-    }
-    this.stateUpdate(update)
+    this.publish('taskToggleComplete', { id: this.data.id })
   }
 }
 
