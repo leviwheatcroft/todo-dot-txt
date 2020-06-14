@@ -1,10 +1,6 @@
-const {
-  v4: uuid
-} = require('uuid')
 require('./ToolsImport.less')
 const template = require('./ToolsImport.pug')
 const LightBox = require('../LightBox')
-const parseTask = require('../../lib/parseTask')
 
 class ToolsImport extends LightBox {
   render () {
@@ -29,25 +25,21 @@ class ToolsImport extends LightBox {
   async import () {
     this.hide()
     const content = await this.$inputImport.files[0].text()
-    const tasks = {
-      ...this.states[0].tasks
-    }
+    // const tasks = {
+    //   ...this.states[0].tasks
+    // }
     // easier to convert all line endings before splitting
-    content.replace(/\r\n?/g, '\n').split(/\n/).forEach((raw) => {
-      if (!raw.length)
-        return
-      const task = {
-        id: uuid()
-      }
-      tasks[task.id] = parseTask(raw, { id: task.id })
-    })
-    this.publish({
-      type: 'import',
-      modifier (s) {
-        s.tasks = tasks
-        return tasks
-      }
-    })
+    const lines = content.replace(/\r\n?/g, '\n').split(/\n/).filter((l) => l)
+    // content.replace(/\r\n?/g, '\n').split(/\n/).forEach((raw) => {
+    //   if (!raw.length)
+    //     return
+    //   const task = {
+    //     id: uuid()
+    //   }
+    //   tasks[task.id] = parseTask(raw, { id: task.id })
+    // })
+    const list = 'todo'
+    this.publish('importTasks', { lines, list })
   }
 }
 

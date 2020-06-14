@@ -14,6 +14,7 @@ class Storage extends StateObserver {
     this.subscribe('domLoaded', this.domLoaded.bind(this))
     this.subscribe('updateExistingTask', this.setTask.bind(this))
     this.subscribe('saveNewTask', this.setTask.bind(this))
+    this.subscribe('importTasks', this.importTasks.bind(this))
   }
 
   domLoaded () {
@@ -43,6 +44,17 @@ class Storage extends StateObserver {
         return s
       }
     })
+  }
+
+  importTasks () {
+    Object.entries(this.states[0].tasks).filter(([id]) => {
+      return !this.registry.includes(id)
+    })
+      .forEach(([id, task]) => {
+        localStorage.setItem(id, JSON.stringify(task))
+        this.registry.push(id)
+      })
+    localStorage.setItem('tdt-registry', JSON.stringify(this.registry))
   }
 
   setTask (advent) {
