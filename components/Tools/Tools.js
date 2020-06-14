@@ -11,6 +11,13 @@ class Tools extends LightBox {
     super.render()
     const $btnPurge = this.querySelector('.btn-purge')
     $btnPurge.addEventListener('click', this.purge.bind(this))
+    const $btnImport = this.querySelector('.btn-import')
+    $btnImport.addEventListener('click', this.import.bind(this))
+  }
+
+  import () {
+    this.hide()
+    document.querySelector('tdt-tools-import').unhide()
   }
 
   purge () {
@@ -18,11 +25,15 @@ class Tools extends LightBox {
     const completeTasks = allTasks.filter((t) => t.complete)
     const incompleteTasks = allTasks.filter((t) => !t.complete)
     const tasks = Object.fromEntries(incompleteTasks.map((t) => [t.id, t]))
-    const update = { tasks }
-    this.stateUpdate(update)
-    this.instancesTrigger({
+    this.publish({
       type: 'purge',
-      data: { completeTasks }
+      modifier (s) {
+        s.tasks = tasks
+        return s
+      },
+      data: {
+        completeTasks
+      }
     })
     this.hide()
   }

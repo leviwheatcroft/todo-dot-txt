@@ -1,23 +1,38 @@
-require('./TaskStatic.less')
-const template = require('./TaskStatic.pug')
+require('./TaskInactive.less')
+const template = require('./TaskInactive.pug')
 const {
-  StateObserverComponent
+  StateObserver
 } = require('../../lib/StateObserver')
+const {
+  Component
+} = require('../../lib/Component')
 
-class TaskStatic extends StateObserverComponent {
+class TaskInactive extends Component {
   constructor () {
     super()
-    this.addEventListener('click', this._editable.bind(this))
+    const { dataset: { id } } = this
+    this.populateData({
+      id,
+      resolverTask: (s) => s.tasks[id],
+      resolverTaskMeta: (s) => s.tasksMeta[id]
+    })
     this.render()
   }
 
   render () {
     super.render()
-    const $completeCheckbox = this.querySelector('.completeCheckbox')
-    $completeCheckbox.addEventListener('click', this._toggleComplete.bind(this))
-    this.querySelectorAll('.tag').forEach(($tag) => {
-      $tag.addEventListener('click', this.filterByTag.bind(this, $tag))
-    })
+    if (this.data.taskMeta.newTask) {
+      const $input = this.querySelector('input')
+      $input.addEventListener('click', this.activate.bind(this))
+    } else {
+      this.querySelector('.complete-checkbox')
+        .addEventListener('click', this._toggleComplete.bind(this))
+      this.querySelector('.description')
+        .addEventListener('click', this.activate.bind(this))
+      this.querySelectorAll('.tag').forEach(($tag) => {
+        $tag.addEventListener('click', this.filterByTag.bind(this, $tag))
+      })
+    }
   }
 
   filterByTag ($tag, event) {
@@ -43,10 +58,11 @@ class TaskStatic extends StateObserverComponent {
     })
   }
 
-  _editable (event) {
+  activate (event) {
     event.stopPropagation()
-    this.stateUpdate({
-      [this.dataPaths.task]: { ...this.data.task, open: true }
+    this.publish({
+      type: 'activateTask',
+      data: { id: this.data.id }
     })
   }
 
@@ -59,6 +75,8 @@ class TaskStatic extends StateObserverComponent {
   }
 }
 
-TaskStatic.prototype.template = template
+TaskInactive.prototype.template = template
 
-module.exports = TaskStatic
+StateObserver.extend(TaskInactive)
+
+module.exports = TaskInactive

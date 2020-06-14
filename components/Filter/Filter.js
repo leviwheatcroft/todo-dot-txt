@@ -1,16 +1,19 @@
 require('./Filter.less')
 const template = require('./Filter.pug')
 const {
-  StateObserverComponent
+  StateObserver
 } = require('../../lib/StateObserver')
+const {
+  Component
+} = require('../../lib/Component')
 
-class Filter extends StateObserverComponent {
+class Filter extends Component {
   constructor () {
     super()
     this.populateData({
-      stateFilter: 'filter'
+      resolverFilter: (s) => s.filter
     })
-    this.on('dataUpdated', this.dataUpdated.bind(this))
+    this.subscribe('applyFilter', this.applyFilter.bind(this))
     this.render()
   }
 
@@ -25,28 +28,30 @@ class Filter extends StateObserverComponent {
     this.$input = $input
   }
 
+  applyFilter (advent) {
+    const { data: { re } } = advent
+    this.render()
+    this.publish({
+      type: 'filtered',
+      modifier (s) {
+        const tasks = {}
+        Object.values(s.tasks).forEach((task) => {
+          const hide = !re.test(task.raw)
+          if (hide === task.hide)
+            tasks[task.id] = task
+          else
+            tasks[task.id] = { ...task, hide }
+        })
+        s.tasks = tasks
+        return s
+      }
+    })
+  }
+
   clear (event) {
     event.stopPropagation()
     const update = { filter: '' }
     this.stateUpdate(update)
-  }
-
-  dataUpdated (unevent) {
-    this.render()
-    console.log(unevent)
-    if (unevent.origin !== this)
-      return
-    let re
-    if (this.data.filter === '') {
-      re = /.*/
-    } else {
-      const reOperators = /[|\\{}()[\]^$+*?.]/g
-      re = new RegExp(this.data.filter.replace(reOperators, '\\$&'))
-    }
-    this.instancesTrigger({
-      type: 'filter',
-      data: { re }
-    })
   }
 
   keyup (event) {
@@ -56,11 +61,24 @@ class Filter extends StateObserverComponent {
   }
 
   edited () {
-    const update = { filter: this.$input.value }
-    this.stateUpdate(update)
+    let re
+    const filter = this.$input.value
+    if (filter) {
+      re = /.*/
+    } else {
+      const reOperators = /[|\\{}()[\]^$+*?.]/g
+      re = new RegExp(filter.replace(reOperators, '\\$&'))
+    }
+    this.publish({
+      type: 'applyFilter',
+      filter,
+      data: { re }
+    })
   }
 }
 
 Filter.prototype.template = template
+
+StateObserver.extend(Filter)
 
 module.exports = Filter

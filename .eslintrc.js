@@ -27,6 +27,8 @@ module.exports = {
     'no-param-reassign': ['error', { 'props': false }],
     'no-await-in-loop': 'off',
     'class-methods-use-this': 'off',
-    'arrow-body-style': 'off'
+    'arrow-body-style': 'off',
+    'consistent-return': 'off',
+    'no-param-reassign': 'off'
   }
 };

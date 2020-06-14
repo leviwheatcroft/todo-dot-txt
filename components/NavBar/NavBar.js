@@ -1,6 +1,8 @@
 require('./NavBar.less')
 const template = require('./NavBar.pug')
-const Component = require('../../lib/Component')
+const {
+  Component
+} = require('../../lib/Component')
 
 class NavBar extends Component {
   constructor () {

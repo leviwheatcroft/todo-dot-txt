@@ -1,10 +1,13 @@
 require('./LightBox.less')
 const template = require('./LightBox.pug')
 const {
-  StateObserverComponent
+  StateObserver
 } = require('../../lib/StateObserver')
+const {
+  Component
+} = require('../../lib/Component')
 
-class LightBox extends StateObserverComponent {
+class LightBox extends Component {
   constructor () {
     super()
     this.classList.add('hide')
@@ -24,5 +27,7 @@ class LightBox extends StateObserverComponent {
 }
 
 LightBox.prototype.template = template
+
+StateObserver.extend(LightBox)
 
 module.exports = LightBox

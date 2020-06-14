@@ -1,15 +1,17 @@
-.closedBar(
+.task-inactive(
   class= classnames({ complete: task.complete })
 )
-  span.flexGroup
-    span.completeCheckbox
+  if taskMeta.newTask
+    input.input
+  else
+    span.complete-checkbox
       if task.complete
         != icons('check-square')
       else
         != icons('square')
     span.description
       = task.parsed
-  span.flexGroup
+
     if task.priority
       span.priority
         .tag.tag-priority(
@@ -20,7 +22,7 @@
             != icons('star')
           span.tag-text
             = task.priority
-    if task.projects.length
+    if task.projects && task.projects.length
       span.projects
         for project in task.projects
           .tag.tag-project(
@@ -30,7 +32,7 @@
               != icons('plus')
             span.tag-text
               = project
-    if task.contexts.length
+    if task.contexts && task.contexts.length
       span.contexts
         for context in task.contexts
           .tag.tag-context(
@@ -40,7 +42,17 @@
               != icons('at-sign')
             span.tag-text
               = context
-    if Object.keys(task.values).length
+    if task.urls && task.urls.length
+      span.urls
+        for url, domain in task.urls
+          a.tag.tag-url(
+            href= url
+          )
+            span.tag-icon
+              != icons('external-link')
+            span.tag-text
+              = domain
+    if task.values && Object.keys(task.values).length
       span.values
         for value, key in task.values
           .tag.tag-value(

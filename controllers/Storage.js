@@ -1,39 +1,19 @@
 const storage = require('../lib/storage')
 const {
-  isArray
-} = require('../lib/typeGuards')
-const {
-  isTaskData
-} = require('../lib/typeGuards')
-const {
   StateObserver
 } = require('../lib/StateObserver')
 
-module.exports = class Storage extends StateObserver {
+class Storage extends StateObserver {
   constructor () {
     super()
     this.registry = []
     const registry = localStorage.getItem('tdt-registry')
     if (registry)
       this.registry = JSON.parse(registry)
-    this.on('domLoaded', this.domLoaded.bind(this))
-    this.on('stateUpdated', this.stateUpdated.bind(this))
-  }
-
-  stateUpdated (event) {
-    if (event.origin === this)
-      return
-    if (!this.isUpdated('tasks'))
-      return
-    Object.entries(this.states[0].tasks).forEach(([id, task]) => {
-      if (task === this.states[1].tasks[id])
-        return
-      this.setTask(task)
-    })
-    Object.keys(this.states[1].tasks).forEach((id) => {
-      if (!this.states[0].tasks[id])
-        this.removeTask(id)
-    })
+    this.initializeStateObserver()
+    this.subscribe('domLoaded', this.domLoaded.bind(this))
+    this.subscribe('updateExistingTask', this.setTask.bind(this))
+    this.subscribe('saveNewTask', this.setTask.bind(this))
   }
 
   domLoaded () {
@@ -41,31 +21,38 @@ module.exports = class Storage extends StateObserver {
       contexts: [],
       projects: [],
       lists: ['todo'],
-      tasks: {}
+      tasks: {},
+      tasksMeta: {}
     }
     storage.getAll().forEach((t) => {
-      state.contexts.push(...t.contexts)
-      state.projects.push(...t.projects)
+      state.contexts.push(...t.contexts || [])
+      state.projects.push(...t.projects || [])
       state.lists.push(t.list || 'todo')
       state.tasks[t.id] = t
+      state.tasksMeta[t.id] = { id: t.id }
     })
     Object.entries(state).forEach(([key, array]) => {
-      if (!isArray(array))
+      if (!Array.isArray(array))
         return
       state[key] = array.filter((i, idx) => array.indexOf(i) === idx)
     })
-    this.stateUpdate(state)
-    this.instancesTrigger({ type: 'storageLoaded' })
+    this.publish({
+      type: 'storageLoaded',
+      modifier (s) {
+        Object.assign(s, state)
+        return s
+      }
+    })
   }
 
-  setTask (taskData) {
-    if (!isTaskData(taskData))
-      throw new RangeError('task must be taskData like')
-    if (!this.registry.includes(taskData.id)) {
-      this.registry.push(taskData.id)
+  setTask (advent) {
+    const { data: { id } } = advent
+    const task = this.states[0].tasks[id]
+    if (!this.registry.includes(id)) {
+      this.registry.push(id)
       localStorage.setItem('tdt-registry', JSON.stringify(this.registry))
     }
-    localStorage.setItem(taskData.id, JSON.stringify(taskData))
+    localStorage.setItem(task.id, JSON.stringify(task))
   }
 
   getTask (id) {
@@ -84,3 +71,7 @@ module.exports = class Storage extends StateObserver {
     localStorage.setItem('tdt-registry', JSON.stringify(this.registry))
   }
 }
+
+Storage.prototype.controllerName = 'Storage'
+
+module.exports = Storage

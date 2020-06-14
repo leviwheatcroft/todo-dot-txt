@@ -1,20 +1,27 @@
 /* eslint-disable consistent-return */
 
-require('./TaskEditable.less')
-const template = require('./TaskEditable.pug')
+require('./TaskActive.less')
+const template = require('./TaskActive.pug')
 
 const {
-  StateObserverComponent
+  StateObserver
 } = require('../../lib/StateObserver')
-const parseTask = require('../../lib/parseTask')
+const {
+  Component
+} = require('../../lib/Component')
 
 let firstPlaceholder = true
 
-class TaskEditable extends StateObserverComponent {
+class TaskActive extends Component {
   constructor () {
     super()
-    this.instancesTrigger({ type: 'taskOpened' })
-    this.on('taskOpened', this.taskOpened.bind(this))
+    const { dataset: { id, list } } = this
+    this.populateData({
+      id,
+      list,
+      resolverTask: (s) => s.tasks[id],
+      resolverTaskMeta: (s) => s.tasksMeta[id]
+    })
     this.render()
   }
 
@@ -22,29 +29,28 @@ class TaskEditable extends StateObserverComponent {
     super.render({ randomPlaceholder: this.randomPlaceholder })
     const $input = this.querySelector('.inputBar input')
     $input.addEventListener('keyup', this.keyup.bind(this))
-    const $buttonSave = this.querySelector('tdt-button-save')
-    $buttonSave.addEventListener('click', this.save.bind(this))
-    Object.assign(this, {
-      $input,
-      $buttonSave
-    })
-  }
-
-  taskOpened ({ origin }) {
-    if (origin === this)
-      return
-    if (this.hasChanges)
-      return
-    const update = { [`tasks.${this.data.task.id}.open`]: false }
-    this.stateUpdate(update)
+    $input.addEventListener('blur', this.save.bind(this))
+    $input.focus()
+    this.querySelector('.btn-save')
+      .addEventListener('click', this.save.bind(this))
   }
 
   save (event) {
     event.stopPropagation()
-    const task = parseTask(this.$input.value, this.data.task)
-    task.open = false
-    const update = { [`tasks.${this.data.task.id}`]: task }
-    this.stateUpdate(update)
+    const raw = this.querySelector('.inputBar input').value
+    if (raw === '')
+      return
+    const {
+      data: { id, list }
+    } = this
+    if (this.data.taskMeta.newTask) {
+      this.publish(
+        ['saveNewTask', 'deactivateTask', 'taskCreateNew'],
+        { id, raw, list }
+      )
+    } else {
+      this.publish(['updateExistingTask', 'deactivateTask'], { id, raw })
+    }
   }
 
   keyup (event) {
@@ -62,8 +68,7 @@ class TaskEditable extends StateObserverComponent {
       firstPlaceholder = false
       return '  ¯\\_(ツ)_/¯'
     }
-    // an easter egg to cheer up someones day!
-    // I have a terrible sense of humour. Please give me some suggestions.
+
     const placeholders = [
       'count pineapples',
       'purge flux capacitor +delorean',
@@ -83,6 +88,8 @@ class TaskEditable extends StateObserverComponent {
   }
 }
 
-TaskEditable.prototype.template = template
+TaskActive.prototype.template = template
 
-module.exports = TaskEditable
+StateObserver.extend(TaskActive)
+
+module.exports = TaskActive

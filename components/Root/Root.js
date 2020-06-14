@@ -1,24 +1,28 @@
 require('./Root.less')
 const template = require('./Root.pug')
 const {
-  StateObserverComponent
+  StateObserver
 } = require('../../lib/StateObserver')
+const {
+  Component
+} = require('../../lib/Component')
 
-class Root extends StateObserverComponent {
+class Root extends Component {
   constructor () {
     super()
     this.populateData({
-      stateTasks: 'tasks',
-      stateLists: 'lists'
+      resolverTasks: (s) => s.tasks,
+      resolverLists: (s) => s.lists
     })
-    this.on('storageLoaded', this.storageLoaded.bind(this))
-    console.log(this.handlers)
+    this.subscribe('storageLoaded', this.storageLoaded.bind(this))
   }
 
   storageLoaded () {
     this.render()
   }
 }
+
+StateObserver.extend(Root)
 
 Root.prototype.template = template
 

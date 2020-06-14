@@ -1,16 +1,21 @@
-/* eslint-disable global-require */
+const TaskActive = require('./TaskActive')
+const TaskInactive = require('./TaskInactive')
+const Root = require('./Root')
+const List = require('./List')
+const Tools = require('./Tools')
+const ToolsImport = require('./ToolsImport')
+const NavBar = require('./NavBar')
+const Filter = require('./Filter')
+
 const components = {
-  'tdt-task': require('./Task'),
-  'tdt-root': require('./Root'),
-  'tdt-list': require('./List'),
-  'tdt-task-static': require('./TaskStatic'),
-  'tdt-task-editable': require('./TaskEditable'),
-  'tdt-task-new': require('./TaskNew'),
-  'tdt-button-save': require('./TeButtonSave'),
-  'tdt-button-due': require('./TeButtonDue'),
-  'tdt-tools': require('./Tools'),
-  'tdt-nav-bar': require('./NavBar'),
-  'tdt-filter': require('./Filter')
+  'tdt-task-active': TaskActive,
+  'tdt-task-inactive': TaskInactive,
+  'tdt-root': Root,
+  'tdt-list': List,
+  'tdt-tools': Tools,
+  'tdt-tools-import': ToolsImport,
+  'tdt-nav-bar': NavBar,
+  'tdt-filter': Filter
 }
 
 Object.entries(components).forEach(([elementName, component]) => {

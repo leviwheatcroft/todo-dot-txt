@@ -1,8 +1,11 @@
-tdt-task(
-  data-new-task
-)
-for task in tasks
-  if task.list === list
-    tdt-task(
-      data-state-task= `tasks.${task.id}`
-    )
+.list
+  for task in resolvedTasks
+    if task.active
+      tdt-task-active(
+        data-id= task.id
+        data-list= task.list
+      )
+    else
+      tdt-task-inactive(
+        data-id= task.id
+      )
