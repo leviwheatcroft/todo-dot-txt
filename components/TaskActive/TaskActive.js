@@ -37,12 +37,12 @@ class TaskActive extends Component {
 
   save (event) {
     event.stopPropagation()
-    const raw = this.querySelector('.inputBar input').value
-    if (raw === '')
-      return
     const {
       data: { id, list }
     } = this
+    const raw = this.querySelector('.inputBar input').value
+    if (raw === '')
+      return this.publish('deactivateTask', { id })
     if (this.data.taskMeta.newTask) {
       this.publish(
         ['saveNewTask', 'deactivateTask', 'taskCreateNew'],
