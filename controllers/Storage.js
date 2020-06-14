@@ -15,6 +15,7 @@ class Storage extends StateObserver {
     this.subscribe('updateExistingTask', this.setTask.bind(this))
     this.subscribe('saveNewTask', this.setTask.bind(this))
     this.subscribe('importTasks', this.importTasks.bind(this))
+    this.subscribe('purgeCompleted', this.purgeCompleted.bind(this))
   }
 
   domLoaded () {
@@ -48,12 +49,23 @@ class Storage extends StateObserver {
 
   importTasks () {
     Object.entries(this.states[0].tasks).filter(([id]) => {
+      if (this.states[0].tasksMeta[id].newTask)
+        return false
       return !this.registry.includes(id)
     })
       .forEach(([id, task]) => {
         localStorage.setItem(id, JSON.stringify(task))
         this.registry.push(id)
       })
+    localStorage.setItem('tdt-registry', JSON.stringify(this.registry))
+  }
+
+  purgeCompleted () {
+    const removed = this.registry.filter((id) => !this.states[0].tasks[id])
+    removed.forEach((id) => {
+      localStorage.removeItem(id)
+    })
+    this.registry = this.registry.filter((id) => !removed.includes(id))
     localStorage.setItem('tdt-registry', JSON.stringify(this.registry))
   }
 

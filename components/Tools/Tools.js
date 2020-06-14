@@ -21,20 +21,7 @@ class Tools extends LightBox {
   }
 
   purge () {
-    const allTasks = Object.values(this.states[0].tasks)
-    const completeTasks = allTasks.filter((t) => t.complete)
-    const incompleteTasks = allTasks.filter((t) => !t.complete)
-    const tasks = Object.fromEntries(incompleteTasks.map((t) => [t.id, t]))
-    this.publish({
-      type: 'purge',
-      modifier (s) {
-        s.tasks = tasks
-        return s
-      },
-      data: {
-        completeTasks
-      }
-    })
+    this.publish('purgeCompleted')
     this.hide()
   }
 }
