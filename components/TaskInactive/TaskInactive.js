@@ -38,24 +38,17 @@ class TaskInactive extends Component {
   filterByTag ($tag, event) {
     event.stopPropagation()
 
-    let filter
+    let textFilter
     if ($tag.classList.contains('tag-priority'))
-      filter = `(${$tag.dataset.priority})`
+      textFilter = `(${$tag.dataset.priority})`
     else if ($tag.classList.contains('tag-project'))
-      filter = `+${$tag.dataset.project}`
+      textFilter = `+${$tag.dataset.project}`
     else if ($tag.classList.contains('tag-context'))
-      filter = `@${$tag.dataset.context}`
+      textFilter = `@${$tag.dataset.context}`
     else if ($tag.classList.contains('tag-value'))
-      filter = `${$tag.dataset.key}:${$tag.dataset.value}`
+      textFilter = `${$tag.dataset.key}:${$tag.dataset.value}`
 
-    const update = { filter }
-    this.stateUpdate(update)
-    const reOperators = /[|\\{}()[\]^$+*?.]/g
-    const re = new RegExp(filter.replace(reOperators, '\\$&'), 'i')
-    this.instancesTrigger({
-      type: 'filter',
-      data: { re }
-    })
+    this.publish('setFilter', { textFilter })
   }
 
   activate (event) {

@@ -8,7 +8,8 @@ const _reducers = [
   require('./activateTask'),
   require('./deactivateTask'),
   require('./saveNewTask'),
-  require('./updateExistingTask')
+  require('./updateExistingTask'),
+  require('./setFilter')
 ]
 
 module.exports = function reducers (state, advent) {

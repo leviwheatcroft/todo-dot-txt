@@ -13,6 +13,7 @@ class List extends Component {
     super()
     this.populateData()
     this.populateData({
+      resolverFilter (s) { return s.filter },
       resolverOptions (s) { return s.options },
       resolverTasks (s) { return s.tasks },
       resolverTasksMeta (s) { return s.tasksMeta }
@@ -33,6 +34,7 @@ class List extends Component {
     const {
       tasks,
       tasksMeta,
+      filter,
       options: {
         sortBy,
         sortOrder,
@@ -41,9 +43,16 @@ class List extends Component {
       }
     } = this.data
     const sortDirection = sortOrder === 'ascending' ? 1 : -1
-    const filtered = Object.values(this.data.tasks).filter(({ list }) => {
-      return list === this.data.list
-    }).map(({ id }) => id)
+    const filtered = Object.values(this.data.tasks)
+      .filter(({ list }) => list === this.data.list)
+      .filter(({ id, raw }) => {
+        if (filter.regExp.test(raw))
+          return true
+        if (tasksMeta[id].newTask)
+          return true
+        return false
+      })
+      .map(({ id }) => id)
     const fileOrder = filtered
     const ordered = fileOrder.sort((a, b) => {
       a = { ...tasks[a], ...tasksMeta[a] }
