@@ -1,5 +1,5 @@
 .task-active
-  .inputBar
+  .input-bar
     input(
       value= task ? task.raw : ''
       placeholder= randomPlaceholder()
@@ -7,9 +7,3 @@
     buttn.btn.btn-save
       span.btn-icon
         != icons('save')
-  .buttonBar
-    buttn.btn.btn-calendar
-      span.btn-icon
-        != icons('calendar')
-      span.btn-text
-        | Due
