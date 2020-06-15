@@ -10,14 +10,15 @@ module.exports = function importTasks (advent, { state, update }) {
 
   const { data: { lines, list } } = advent
   const tasks = Object.fromEntries(
-    lines.map((raw) => {
+    lines.map((raw, lineNumber) => {
       const id = uuid()
       return [
         id,
         {
           id,
           list,
-          ...parseTask(raw)
+          ...parseTask(raw),
+          lineNumber
         }
       ]
     })

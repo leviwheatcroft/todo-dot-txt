@@ -10,6 +10,13 @@ module.exports = function purgeCompleted (advent, { state, update }) {
     delete tasks[id]
     delete tasksMeta[id]
   })
+  Object.values(state.lists)
+    .forEach(({ id }) => {
+      Object.values(state.tasks)
+        .filter((task) => task.list === id)
+        .sort((taskA, taskB) => taskA.lineNumber - taskB.lineNumber)
+        .forEach((task, idx) => { task.lineNumber = idx })
+    })
   update(['tasks'], tasks)
   update(['tasksMeta'], tasksMeta)
 }

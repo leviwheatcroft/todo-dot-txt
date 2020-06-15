@@ -23,14 +23,14 @@ class Storage extends StateObserver {
     const state = {
       contexts: [],
       projects: [],
-      lists: ['todo'],
+      lists: { todo: { id: 'todo' } },
       tasks: {},
       tasksMeta: {}
     }
     storage.getAll().forEach((t) => {
       state.contexts.push(...t.contexts || [])
       state.projects.push(...t.projects || [])
-      state.lists.push(t.list || 'todo')
+      state.lists[t.list] = state.lists[t.list] || { id: t.list }
       state.tasks[t.id] = t
       state.tasksMeta[t.id] = { id: t.id }
     })
