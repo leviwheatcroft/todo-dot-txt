@@ -16,7 +16,6 @@ module.exports = function saveNewTask (advent, { state, update }) {
     .reduce((lineNumber, task) => {
       return Math.max(lineNumber, task.lineNumber + 1)
     }, 0)
-  console.log(lineNumber)
   update(['tasks', id], {
     ...state.tasks[id],
     ...parseTask(raw),
