@@ -27,7 +27,7 @@ class TaskActive extends Component {
 
   render () {
     super.render({ randomPlaceholder: this.randomPlaceholder })
-    const $input = this.querySelector('.inputBar input')
+    const $input = this.querySelector('.input-bar input')
     $input.addEventListener('keyup', this.keyup.bind(this))
     $input.addEventListener('blur', this.save.bind(this))
     $input.focus()
@@ -40,7 +40,7 @@ class TaskActive extends Component {
     const {
       data: { id, list }
     } = this
-    const raw = this.querySelector('.inputBar input').value
+    const raw = this.querySelector('.input-bar input').value
     if (raw === '')
       return this.publish('deactivateTask', { id })
     if (this.data.taskMeta.newTask) {

@@ -12,6 +12,16 @@
     span.description
       = task.parsed
 
+    if task.createdDate
+      span.createdDate
+        .tag.tag-created-date(
+          data-created-date= task.createdDate
+        )
+          span.tag-icon
+            != icons('calendar')
+          span.tag-text
+            = task.createdDate
+
     if task.priority
       span.priority
         .tag.tag-priority(
@@ -22,6 +32,7 @@
             != icons('star')
           span.tag-text
             = task.priority
+
     if task.projects && task.projects.length
       span.projects
         for project in task.projects
@@ -32,6 +43,7 @@
               != icons('plus')
             span.tag-text
               = project
+
     if task.contexts && task.contexts.length
       span.contexts
         for context in task.contexts
@@ -42,6 +54,7 @@
               != icons('at-sign')
             span.tag-text
               = context
+
     if task.urls && task.urls.length
       span.urls
         for url, domain in task.urls
@@ -52,6 +65,7 @@
               != icons('external-link')
             span.tag-text
               = domain
+
     if task.values && Object.keys(task.values).length
       span.values
         for value, key in task.values

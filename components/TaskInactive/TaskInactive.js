@@ -39,16 +39,21 @@ class TaskInactive extends Component {
     event.stopPropagation()
 
     let textFilter
-    if ($tag.classList.contains('tag-priority'))
+    let re = false
+    if ($tag.classList.contains('tag-created-date')) {
+      textFilter = $tag.dataset.createdDate
+      re = new RegExp(`.{0,7}${$tag.dataset.createdDate}`)
+    } else if ($tag.classList.contains('tag-priority')) {
       textFilter = `(${$tag.dataset.priority})`
-    else if ($tag.classList.contains('tag-project'))
+    } else if ($tag.classList.contains('tag-project')) {
       textFilter = `+${$tag.dataset.project}`
-    else if ($tag.classList.contains('tag-context'))
+    } else if ($tag.classList.contains('tag-context')) {
       textFilter = `@${$tag.dataset.context}`
-    else if ($tag.classList.contains('tag-value'))
+    } else if ($tag.classList.contains('tag-value')) {
       textFilter = `${$tag.dataset.key}:${$tag.dataset.value}`
+    }
 
-    this.publish('setFilter', { textFilter })
+    this.publish('setFilter', { textFilter, re })
   }
 
   activate (event) {
