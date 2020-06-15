@@ -26,13 +26,26 @@ class TaskActive extends Component {
   }
 
   render () {
-    super.render({ randomPlaceholder: this.randomPlaceholder })
+    super.render({
+      dateString: this.dateString,
+      randomPlaceholder: this.randomPlaceholder
+    })
     const $input = this.querySelector('.inputBar input')
     $input.addEventListener('keyup', this.keyup.bind(this))
-    $input.addEventListener('blur', this.save.bind(this))
+    // $input.addEventListener('blur', this.save.bind(this))
     $input.focus()
     this.querySelector('.btn-save')
       .addEventListener('click', this.save.bind(this))
+    this.querySelectorAll('.btn-group-select .btn').forEach(($btn) => {
+      $btn.addEventListener('click', (event) => {
+        event.stopPropagation()
+        this.querySelector('.btn-group-select')
+          .classList.add('active')
+        this.querySelector(`.${event.target.dataset.select}`)
+          .classList.add('active')
+        event.target.querySelector('.setter').classList.add('active')
+      })
+    })
   }
 
   save (event) {
@@ -85,6 +98,16 @@ class TaskActive extends Component {
     ]
     const random = Math.floor(Math.random() * placeholders.length)
     return placeholders[random]
+  }
+
+  dateString (plusDays = 0) {
+    const now = new Date()
+    const date = new Date(now.getTime() + (plusDays * 24 * 60 * 60 * 1000))
+    return [
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    ].join('-')
   }
 }
 

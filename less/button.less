@@ -36,3 +36,23 @@
     }
   }
 }
+.btn-group {
+  display: flex;
+  align-items: center;
+  // background-color: transparent;
+  padding: 0 1rem;
+  .btn {
+    margin: 0;
+    border-radius: 0;
+    border-left-width: 0;
+    &:first-child {
+      border-left-width: 0.1rem;
+      border-top-left-radius: 0.4rem;
+      border-bottom-left-radius: 0.4rem;
+    }
+    &:last-of-type {
+      border-top-right-radius: 0.4rem;
+      border-bottom-right-radius: 0.4rem;
+    }
+  }
+}

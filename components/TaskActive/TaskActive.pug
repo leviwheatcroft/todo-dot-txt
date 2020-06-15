@@ -4,12 +4,55 @@
       value= task ? task.raw : ''
       placeholder= randomPlaceholder()
     )
-    buttn.btn.btn-save
+    button.btn.btn-save
       span.btn-icon
         != icons('save')
-  .buttonBar
-    buttn.btn.btn-calendar
-      span.btn-icon
-        != icons('calendar')
-      span.btn-text
-        | Due
+  .button-bar
+    .btn-group.btn-group-select
+      button.btn.btn-priority(
+        data-select= "select-priority"
+      )
+        span.btn-icon
+          != icons('star')
+      button.btn.btn-project(
+        data-select= "select-project"
+      )
+        span.btn-icon
+          != icons('plus')
+      button.btn.btn-context(
+        data-select= "select-context"
+      )
+        span.btn-icon
+          != icons('at-sign')
+      button.btn.btn-due(
+        data-select= "select-due"
+      )
+        span.btn-icon
+          != icons('calendar')
+
+      .select.select-priority
+      .select.select-project
+      .select.select-context
+      .select.select-due
+        .select-title
+          | Due:
+        .select-row.custom
+          input(
+            type= date
+            placeholder= "custom"
+          )
+        .select-row.today
+          span Today
+          span= dateString()
+        .select-row.plus3
+          span + 3d
+          span= dateString(3)
+        .select-row.plus7
+          span + 7d
+          span= dateString(7)
+        .select-row.plus14
+          span + 14d
+          span= dateString(14)
+        .select-row.plus28
+          span + 28d
+          span= dateString(28)
